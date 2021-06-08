@@ -96,7 +96,20 @@ const defaultConfig = {
   }
 })();
 
-process.on('unhandledRejection', error => {
-  console.log('unhandledRejection', error.message);
-  process.exitCode = 1;
-});
+/**
+ * exitCode
+ * 0 正常退出
+ * 1 非正常退出
+ */
+
+const exitHandler = (error) => {
+  console.log(error);
+  process.exitCode = error ? 1 : 0;
+}
+
+process.on('unhandledRejection', exitHandler);
+process.on('uncaughtException', exitHandler);
+
+process.on('SIGINT', exitHandler)
+process.on('SIGTERM', exitHandler)
+process.on('SIGQUIT', exitHandler)
